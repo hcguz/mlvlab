@@ -25,7 +25,7 @@ The hyperparameters are themed to match the dungeon scenario:
 
 ---
 
-## Technical Specifications
+## Technical Sheet
 
 ### Environment Configuration
 
@@ -37,36 +37,68 @@ The environment can be customized when creating it:
 
 ### Observation Space
 
-```python
+The observation space defines what the agent "sees" at each step.
+```
 Box(0, GRID_SIZE-1, (2,), int32)
 ```
-
-*   **Meaning:** Vector `[x, y]` representing the ant's position.
+* **Meaning:** The observation is a vector with 2 integers, representing the ant's position `[x, y]` in the grid.
+* **Limits:** Each coordinate ranges from 0 to GRID_SIZE-1, corresponding to a configurable grid size.
 
 ### Action Space
 
-```python
+The action space defines what movements the agent can perform.
+```
 Discrete(4)
 ```
-
-*   `0`: Up, `1`: Down, `2`: Left, `3`: Right.
+* **Meaning:** The agent can choose one of 4 discrete actions, represented by an integer:
+    * `0`: Move **Up** (decreases the `y` coordinate)
+    * `1`: Move **Down** (increases the `y` coordinate)
+    * `2`: Move **Left** (decreases the `x` coordinate)
+    * `3`: Move **Right** (increases the `x` coordinate)
 
 ---
 
 ## Environment Dynamics
 
-### Rewards
+### Rewards (Rewards)
 
-*   **`+100`**: For reaching the dungeon exit.
-*   **`-10`**: For hitting a wall.
-*   **`-1`**: For each step taken.
+The agent receives a signal (reward) after each action to guide its learning:
+* **`+100`**: For reaching the dungeon exit.
+* **`-10`**: For hitting a wall.
+* **`-1`**: For each step taken. This incentivizes the agent to find the shortest path.
 
-### Episode End
+### Episode End (Termination & Truncation)
 
-*   **`terminated = True`**: The agent reaches the exit.
-*   **`truncated = True`**: The maximum step limit is reached.
+An "episode" (an attempt to find the exit) ends under the following conditions:
+* **`terminated = True`**: The agent reaches the exit. The episode ends successfully.
+* **`truncated = True`**: The maximum step limit is reached. This prevents the agent from wandering indefinitely.
 
-**Note:** If the ant hits a wall, it receives the penalty but **the episode does not end**. The ant remains in its current cell.
+**Important note:** If the ant hits a wall, it receives the penalty but **the episode does not end**. The ant remains in its current cell.
+
+---
+
+## Additional Information (`info`)
+
+Both `reset()` and `step()` return an **`info`** dictionary, useful for debugging but **not recommended for direct use in training**.
+
+---
+
+### In `reset()`
+| Key                 | Description                                        |
+|---------------------|----------------------------------------------------|
+| `grid_size`         | Size of the maze grid.                            |
+
+---
+
+### In `step()`
+| Key                 | Description |
+|---------------------|-------------|
+| `grid_size`         | Size of the maze grid. |
+| `collided`          | `True` if the ant collides against a wall. |
+| `terminated`        | `True` if the episode ends because the ant reached the exit. |
+| `play_sound`        | Dictionary with sound information:<br>• `{'filename': 'success.wav', 'volume': 10}` → when reaching the exit.<br>• `{'filename': 'bump.wav', 'volume': 7}` → when colliding with a wall. |
+
+---
 
 ### Reset Behavior
 
@@ -77,6 +109,49 @@ When calling `reset()` without `seed`, the current dungeon is preserved and the 
 ## Pheromone Visualization (Debug Mode)
 
 When activating `debug` mode (Show Pheromones) in the interactive view, the learned Q-Table is visualized as a "pheromone trail". The color varies from pale pink (low value) to intense pink (high value), indicating the ant's preferred path.
+
+---
+
+## Recommended Training Strategy
+
+### Algorithm: Q-Learning (tabular)
+
+The combination of a **discrete state space** and a **discrete action space (4 actions)** makes this environment a perfect candidate for tabular algorithms like **Q-Learning**.
+
+This method learns by creating a "lookup table" (the Q-Table) that stores the expected value for each action at each maze position, allowing the agent to determine the optimal policy.
+
+---
+
+## Shell Usage Examples
+
+```bash
+# Start MLVisual terminal
+uv run mlv shell
+
+# Play interactively in the environment
+play AntMaze-v1
+
+# Train an agent for a specific seed (e.g., 42)
+train AntMaze-v1 --seed 42
+
+# Train with a random seed
+train AntMaze-v1
+
+# Evaluate the last training in window mode
+eval AntMaze-v1
+
+# Evaluate a training from a specific seed
+eval AntMaze-v1 --seed 42
+
+# Evaluate a training with 100 episodes
+eval AntMaze-v1 --eps 100
+
+# Launch an interactive view to manipulate the environment using controls
+view AntMaze-v1
+
+# View this technical sheet from the terminal
+docs AntMaze-v1
+```
 
 ---
 
@@ -100,12 +175,48 @@ In view mode:
 
 ## Script and Notebook Compatibility
 
-```python
-# Run a random episode in a notebook
-import gymnasium as gym
-import mlvlab # Make sure mlvlab is installed and the environment is registered
+You can use **mlvlab** both in standalone scripts and interactive environments (Jupyter, Google Colab, etc.).  
 
-# Create a 15x15 maze
+---
+
+### 1. Usage with Python Scripts
+
+Create a dedicated virtual environment and install `mlvlab`:
+
+```bash
+# (Optional) Create a dedicated virtual environment
+uv venv
+
+# Install mlvlab within that virtual environment
+uv pip install mlvlab
+
+# Run your script within the virtual environment
+uv run python my_script.py
+```
+
+### 2. Usage with Jupyter Notebooks
+
+Simply select your virtual environment as kernel, or launch Jupyter with:
+
+```bash
+uv run jupyter notebook
+```
+
+### 3. Usage with Google Colab
+
+Install `mlvlab` directly in the Colab session:
+
+```bash
+!pip install mlvlab
+```
+
+### Quick examples for notebooks
+
+```python
+# Create the environment and run a random episode
+import gymnasium as gym
+import mlvlab  # registers the "mlv/..." environments
+
 try:
     env = gym.make("mlv/AntMaze-v1", render_mode="human", grid_size=15)
     obs, info = env.reset(seed=42)
@@ -120,15 +231,48 @@ except gym.error.NameNotFound:
 ```
 
 ```python
-# Tabular training (Q-Table) basic example
+# Tabular training with Q-Learning agent from the package
+from mlvlab.agents.q_learning import QLearningAgent
+import gymnasium as gym
+import mlvlab  # registers the "mlv/..." environments
+
+try:
+    env = gym.make("mlv/AntMaze-v1", grid_size=15)
+    obs, info = env.reset(seed=42)
+
+    agent = QLearningAgent(
+        observation_space=env.observation_space,
+        action_space=env.action_space,
+        learning_rate=0.1,
+        discount_factor=0.99,
+        epsilon=1.0,
+        epsilon_decay=0.995,
+        min_epsilon=0.01
+    )
+
+    n_steps = 100
+    for _ in range(n_steps):
+        action = agent.act(obs)
+        next_obs, reward, terminated, truncated, info = env.step(action)
+        agent.learn(obs, action, reward, next_obs, terminated)
+        obs = next_obs
+        if terminated or truncated:
+            obs, info = env.reset()
+    env.close()
+except gym.error.NameNotFound:
+    print("Error: mlv/AntMaze-v1 not registered.")
+```
+
+```python
+# Tabular training (Q-Table) with simplified algorithm
 import numpy as np
 import gymnasium as gym
-import mlvlab
+import mlvlab  # registers the "mlv/..." environments
 
 try:
     env = gym.make("mlv/AntMaze-v1", grid_size=15)
     GRID = int(env.unwrapped.GRID_SIZE)
-    N_S, N_A = GRID * GRID, 4 # We use only the 4 movement actions for learning
+    N_S, N_A = GRID * GRID, 4  # We use only the 4 movement actions for learning
     Q = np.zeros((N_S, N_A), dtype=np.float32)
 
     def obs_to_state(obs):
@@ -164,6 +308,8 @@ try:
 except gym.error.NameNotFound:
     print("Error: mlv/AntMaze-v1 not registered.")
 ```
+
+**Suggestion**: Save and load the Q-Table/weights to reuse them between sessions. You can also train from the shell and evaluate in notebook, or vice versa.
 
 ---
 

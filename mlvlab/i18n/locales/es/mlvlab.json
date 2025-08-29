@@ -49,7 +49,7 @@
       "error_no_main_function": "❌ [bold red]Error:[/bold red] El módulo '{module_path}' no expone función main().",
       "error_plugin_load": "❌ [red]Error al cargar plugin '{plugin_name}':[/red] {error}",
       "game_started": "🕹️  Juego iniciado. Usa las teclas definidas. ESC para salir.",
-      "docs_browser_opened": "📖 [bold green]Documentación abierta en el navegador[/bold green]",
+      "docs_browser_opened": "📖 [bold green]Intentando abrir documentación en el navegador...[/bold green]",
       "docs_browser_error": "⚠️  [yellow]No se pudo abrir el navegador: {error}[/yellow]",
       "docs_full_documentation": "Documentación Online:",
       "docs_observation_space": "Observation Space:",

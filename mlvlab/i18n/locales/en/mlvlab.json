@@ -49,7 +49,7 @@
       "error_no_main_function": "❌ [bold red]Error:[/bold red] Module '{module_path}' does not expose main() function.",
       "error_plugin_load": "❌ [red]Error loading plugin '{plugin_name}':[/red] {error}",
       "game_started": "🕹️  Game started. Use the defined keys. ESC to exit.",
-      "docs_browser_opened": "📖 [bold green]Documentation opened in browser[/bold green]",
+      "docs_browser_opened": "📖 [bold green]Trying to open documentation in browser...[/bold green]",
       "docs_browser_error": "⚠️  [yellow]Can't open browser: {error}[/yellow]",
       "docs_full_documentation": "Full Documentation:",
       "docs_observation_space": "Observation Space:",

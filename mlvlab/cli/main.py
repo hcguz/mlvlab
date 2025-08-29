@@ -16,11 +16,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.formatted_text import HTML
 from prompt_toolkit.completion import NestedCompleter
-
-# Importamos las nuevas utilidades de gestión de 'runs'
 from mlvlab.cli.utils import console, get_env_config
-
-# Importamos el sistema de internacionalización
 from mlvlab.i18n.core import i18n
 
 
@@ -141,7 +137,6 @@ def config_command(
     command_str = " ".join(command_parts)
 
     clear_screen(command_str)
-    from pathlib import Path
     import json
     from mlvlab.i18n.core import i18n
 
@@ -243,7 +238,6 @@ def list_environments(
     # Recarga la configuración de i18n para cualquier cambio en vivo
     # (Esta lógica de recarga se puede mantener como está)
     try:
-        from pathlib import Path
         import json
         i18n._detect_locale()
         config_file = Path.home() / '.mlvlab' / 'config.json'
@@ -620,8 +614,6 @@ def docs_command(
     command_str = f"docs {env_id}"
 
     clear_screen(command_str)
-    import webbrowser
-    from pathlib import Path
 
     # Normalizar el ID del entorno
     normalized_env_id = normalize_env_id(env_id)
@@ -660,6 +652,7 @@ def docs_command(
 
         # Intentar abrir en el navegador usando subprocess para evitar bloqueo
         try:
+            console.print("\n" + i18n.t("cli.messages.docs_browser_opened"))
             # Usar subprocess para abrir el navegador de forma no bloqueante
             if os.name == 'nt':  # Windows
                 subprocess.Popen(['start', docs_url], shell=True)
@@ -669,10 +662,11 @@ def docs_command(
                 if sys.platform == 'darwin':
                     subprocess.Popen(['open', docs_url])
             else:
+                pass
                 # Fallback a webbrowser si no se puede usar subprocess
-                webbrowser.open(docs_url)
-
-            console.print("\n" + i18n.t("cli.messages.docs_browser_opened"))
+                # webbrowser.open(docs_url) # No es una dependencia de mlvlab
+                # console.print(
+                #     i18n.t("cli.messages.docs_browser_error", error=str(e)))
         except Exception as e:
             console.print(
                 i18n.t("cli.messages.docs_browser_error", error=str(e)))
