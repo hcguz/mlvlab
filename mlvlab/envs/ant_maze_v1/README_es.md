@@ -3,7 +3,7 @@
 [![en](https://img.shields.io/badge/Lang-EN-lightgrey.svg)](./README.md)
 [![es](https://img.shields.io/badge/Lang-ES-red.svg)](./README_es.md)
 
-Este archivo documenta el entorno `mlv/AntMaze-v1`, también conocido como **Dungeons & Pheromones**.
+Este archivo documenta el entorno `mlv/AntMaze-v1`, también conocido como **Feromonas y Mazmorras**.
 
 <img src="../../../docs/ant_maze_v1/mode_view_es.jpg" alt="view mode" width="100%">
 
