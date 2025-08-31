@@ -275,7 +275,8 @@ def list_environments(
                 "common.custom_unit"))
             table.add_row(emoji, f"[cyan]{u}[/cyan]", coleccion, desc)
         console.print(table)
-        console.print(i18n.t("cli.messages.use_list_unit"))
+        console.print(
+            "[dim]" + i18n.t("cli.messages.use_list_unit") + "[/dim]\n")
         return
 
     # Parte 3: Lógica Unificada y Refactorizada para mostrar entornos de una unidad ---
@@ -505,7 +506,7 @@ def shell_command():
 
     shell_command._in_shell = True
     clear_screen("shell")
-    console.print(f"[bold green]{i18n.t('cli.repl.welcome')}[/bold green]")
+    console.print(f"{i18n.t('cli.welcome')}")
     console.print(i18n.t('cli.repl.exit_tip'))
 
     # 1. Configuración del Autocompletado ---
@@ -550,6 +551,7 @@ def shell_command():
         history=FileHistory(str(history_file)),
         completer=completer,
         complete_while_typing=True,
+        reserve_space_for_menu=0
     )
 
     # 3. Bucle Principal (REPL) ---
@@ -566,6 +568,7 @@ def shell_command():
             command = args[0].lower()
 
             if command in ["quit", "exit"]:
+                clear_screen(command)
                 break
 
             if command in ["cls", "clear"]:
@@ -602,7 +605,7 @@ def shell_command():
 
     # Limpiar el estado de la shell
     shell_command._in_shell = False
-    console.print(f"[yellow]{i18n.t('cli.repl.goodbye')}[/yellow]")
+    console.print(f"{i18n.t('cli.repl.goodbye')}")
 
 
 @app.command(name="docs", help=i18n.t("cli.help.docs"))

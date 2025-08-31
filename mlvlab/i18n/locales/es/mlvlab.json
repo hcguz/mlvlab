@@ -1,5 +1,6 @@
 {
   "cli": {
+    "welcome": "[yellow]¡Bienvenido a[/yellow] [bold blue]MLV-Lab[/bold blue][yellow]! La herramienta educativa de[/yellow] [bold blue]https://mlvisual.com[/bold blue]",
     "help": {
       "main": "[bold green]MLV-Lab CLI[/bold green]: Ecosistema de aprendizaje de IA Visual.",
       "list": "Lista unidades disponibles o los entornos de una unidad concreta.",
@@ -39,7 +40,7 @@
       "no_seed_random": "🌱 No se especificó semilla. Usando una aleatoria: {seed}",
       "searching_last_training": "ℹ️  No se especificó semilla. Buscando el último entrenamiento...",
       "evaluating_from": "🎬 Evaluando desde {run_dir}...",
-      "use_list_unit": "Usa: [bold]list <unidad>[/bold] para ver entornos de una unidad (ej. list ants)",
+      "use_list_unit": "Nota: Usa [bold]list <unidad>[/bold] para ver entornos de una unidad (ej. [bold green]list ants[/bold green])",
       "error_no_algorithm": "❌ Error: No hay algoritmo de referencia definido para {env_id}.",
       "error_training": "❌ Error al entrenar con algoritmo '{algorithm_key}': {error}",
       "error_evaluation": "❌ Error al evaluar con algoritmo '{algorithm_key}': {error}",
@@ -54,7 +55,7 @@
       "docs_full_documentation": "Documentación Online:",
       "docs_observation_space": "Observation Space:",
       "docs_action_space": "Action Space:",
-      "dev_note": "Nota del Desarrollador: Para usar en scripts, añade el prefijo 'mlv/' al ID (ej. 'mlv/AntScout-v1').",
+      "dev_note": "Nota: Para usar en scripts, añade el prefijo 'mlv/' al ID (ej. 'mlv/AntScout-v1').",
       "random_training_end": "✅ Entrenamiento aleatorio completado.",
       "random_training_start": "🚩 Iniciando entrenamiento aleatorio...",
       "evaluating_random": "🏃 Evaluando agente aleatorio...",
@@ -72,7 +73,9 @@
     "repl": {
       "welcome": "Bienvenido a la sesión interactiva de MLV-Lab.",
       "exit_tip": "Escribe 'exit' o 'quit' (o pulsa Ctrl+D) para salir.",
-      "goodbye": "Mantente al día de las novedades en nuestra web. ¡Hasta luego!"
+      "goodbye": "[yellow]¡Hasta pronto! Mantente al día del proyecto en[/yellow] [bold blue]https://mlvisual.com[/bold blue]",
+      "press_enter_to_continue": "[dim]Pulsa Intro para continuar...[/dim]"
+      
     },
     "shell": {
       "venv_not_found": "Error: No se encontró el entorno virtual en '.venv'.",
@@ -227,7 +230,7 @@
   },
   "analytics": {
     "render_thread_started": "🎥 Hilo de Renderizado [ID: {thread_id}] iniciado.",
-    "render_thread_stopped": "⏹️ Hilo de Renderizado [ID: {thread_id}] detenido.",
+    "render_thread_stopped": "⏹️  Hilo de Renderizado [ID: {thread_id}] detenido.",
     "model_saved": "💾 Modelo guardado exitosamente en: {filepath}",
     "error_saving_file": "❌ Error al guardar el fichero: {error}",
     "client_connected": "🔌 Cliente {client_id} conectado al stream de video.",

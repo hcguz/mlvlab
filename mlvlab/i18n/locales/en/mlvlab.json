@@ -1,5 +1,6 @@
 {
   "cli": {
+    "welcome": "[yellow]Welcome to[/yellow] [bold blue]MLV-Lab[/bold blue][yellow]! The educational tool of[/yellow] [bold blue]https://mlvisual.com[/bold blue]",
     "help": {
       "main": "[bold green]MLV-Lab CLI[/bold green]: Visual AI Learning Ecosystem.",
       "list": "List available units or environments from a specific unit.",
@@ -39,7 +40,7 @@
       "no_seed_random": "🌱 No seed specified. Using random seed: {seed}",
       "searching_last_training": "ℹ️  No seed specified. Looking for latest training...",
       "evaluating_from": "🎬 Evaluating from {run_dir}...",
-      "use_list_unit": "Use: [bold]list <unit>[/bold] to see environments from a unit (e.g. list ants)",
+      "use_list_unit": "Note: Use [bold]list <unit>[/bold] to see environments from a unit (e.g. [bold green]list ants[/bold green])",
       "error_no_algorithm": "❌ Error: No reference algorithm defined for {env_id}.",
       "error_training": "❌ Error training with algorithm '{algorithm_key}': {error}",
       "error_evaluation": "❌ Error evaluating with algorithm '{algorithm_key}': {error}",
@@ -54,7 +55,7 @@
       "docs_full_documentation": "Full Documentation:",
       "docs_observation_space": "Observation Space:",
       "docs_action_space": "Action Space:",
-      "dev_note": "Developer Note: To use in scripts, add the prefix 'mlv/' to the ID (e.g. 'mlv/AntScout-v1').",
+      "dev_note": "Note: To use in scripts, add the prefix 'mlv/' to the ID (e.g. 'mlv/AntScout-v1').",
       "random_training_end": "✅ Random training completed.",
       "random_training_start": "🚩 Starting random training...",
       "evaluating_random": "🏃 Evaluating random agent...",
@@ -72,7 +73,8 @@
     "repl": {
       "welcome": "Welcome to the MLV-Lab interactive session.",
       "exit_tip": "Type 'exit' or 'quit' (or press Ctrl+D) to exit.",
-      "goodbye": "Stay up to date with the latest news on our website. See you later!"
+      "goodbye": "[yellow]Good bye! Stay up to date with the project on[/yellow] [bold blue]https://mlvisual.com[/bold blue]",
+      "press_enter_to_continue": "[dim]Press Enter to continue...[/dim]"
     },
     "shell": {
       "venv_not_found": "Error: Virtual environment not found in '.venv'.",
@@ -227,7 +229,7 @@
   },
   "analytics": {
     "render_thread_started": "🎥 Render Thread [ID: {thread_id}] started.",
-    "render_thread_stopped": "⏹️ Render Thread [ID: {thread_id}] stopped.",
+    "render_thread_stopped": "⏹️  Render Thread [ID: {thread_id}] stopped.",
     "model_saved": "💾 Model saved successfully in: {filepath}",
     "error_saving_file": "❌ Error saving file: {error}",
     "client_connected": "🔌 Client {client_id} connected to video stream.",
