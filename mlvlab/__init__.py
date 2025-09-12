@@ -21,3 +21,9 @@ register(
     max_episode_steps=500,
     kwargs={'grid_size': 11}  # Argumentos por defecto
 )
+
+register(
+    id="mlv/AntGuard-v1",
+    entry_point="mlvlab.envs.ant_guard_v1.env:AntGuardEnv",
+    max_episode_steps=1000
+)

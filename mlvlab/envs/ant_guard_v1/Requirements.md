@@ -39,7 +39,7 @@ El entorno de juego simula visualmente un túnel que se estrecha hacia el fondo,
 
 * **Posición**: Fija en la parte inferior central del cono.
 * **Estado** Interno: angle, acid_remaining, cooldown_timer_frames.
-* **Acciones**: WAIT, ROTATE_LEFT, ROTATE_RIGHT, SPIT_ACID.
+* **Acciones**: `WAIT`, `ROTATE_LEFT`, `ROTATE_RIGHT`, `SPIT_ACID`.
 
 ### 4.2. Araña (Enemigo)
 
