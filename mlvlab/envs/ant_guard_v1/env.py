@@ -85,7 +85,13 @@ class AntGuardEnv(gym.Env):
                 raise ImportError(
                     f"Could not import AntGuardRenderer. Please ensure Arcade is installed. Error: {e}")
 
-        return self.renderer.update(self.game.get_state())
+        result = self.renderer.update(self.game.get_state())
+
+        # Asignar la ventana del renderer al entorno para que el player pueda acceder a ella
+        if self.renderer and hasattr(self.renderer, 'window'):
+            self.window = self.renderer.window
+
+        return result
 
     def close(self):
         if self.renderer and self.renderer.window:

@@ -1,5 +1,16 @@
 import numpy as np
-import arcade
+
+# Importación condicional de Arcade para asegurar compatibilidad en entornos sin gráficos.
+try:
+    import arcade
+    DEFAULT_COLOR_ACID = arcade.color.LIME_GREEN
+    ARCADE_AVAILABLE = True
+except ImportError:
+    # Fallback si arcade no está instalado (ej. servidor de entrenamiento)
+    arcade = None
+    # Color RGB fallback (Verde Lima)
+    DEFAULT_COLOR_ACID = (50, 205, 50)
+    ARCADE_AVAILABLE = False
 
 
 class AntGuardConstants:
@@ -16,6 +27,10 @@ class AntGuardConstants:
     SPIDER_SPEED = 0.6
     ZIGZAG_FREQUENCY = 0.05
 
+    # --- NUEVO: Velocidad del proyectil (Visual, en unidades de mundo/paso) ---
+    # Requisito 6.2. Calculado para cruzar la altura (100) en aprox 0.5s (15 frames). 100/15 ≈ 6.7
+    VISUAL_PROJECTILE_SPEED = 7.0
+
     # --- Dimensiones del Mundo (Lógica Cónica) ---
     WORLD_HEIGHT = 100.0
     WORLD_WIDTH_TOP = 80.0
@@ -27,11 +42,10 @@ class AntGuardConstants:
     REWARD_KILL = 100
     REWARD_HIT = 30
     REWARD_LOSE = -100
-    REWARD_MISS = 0
-    # --- CAMBIO CLAVE: Aumentamos la penalización por paso ---
-    # Esto crea una "urgencia" para que el agente actúe en lugar de
-    # simplemente esperar y acumular una pequeña penalización.
-    REWARD_STEP = -2
+    # Actualizado según Requirements.md (5.2)
+    REWARD_MISS = -5
+    # Actualizado según Requirements.md (5.2).
+    REWARD_STEP = -1
 
     # --- Configuración de Renderizado (Arcade) ---
     SCREEN_WIDTH = 600
@@ -44,7 +58,7 @@ class AntGuardConstants:
     COLOR_BG_OUTSIDE = (30, 20, 10)
     COLOR_BG_TUNNEL = (60, 40, 25)
     COLOR_WALL = (100, 70, 40)
-    COLOR_ACID = arcade.color.LIME_GREEN
+    COLOR_ACID = DEFAULT_COLOR_ACID
 
     # --- Parámetros del Wrapper (Requisitos 7) ---
     WRAPPER_NUM_DIST_BINS = 4
