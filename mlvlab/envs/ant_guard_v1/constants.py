@@ -1,3 +1,4 @@
+# constants.py
 import numpy as np
 
 # Importación condicional de Arcade para asegurar compatibilidad en entornos sin gráficos.
@@ -17,19 +18,27 @@ class AntGuardConstants:
     # --- Parámetros de Simulación (Requisitos 3) ---
     SPIDER_HEALTH_MAX = 3
     ANT_ACID_TANK_MAX = 5
-    SPIT_COOLDOWN_FRAMES_MAX = 90  # 3 segundos a 30 FPS
+    # 3 segundos (Basado en 30 FPS originalmente). Se mantiene como referencia de frames para la lógica.
+    SPIT_COOLDOWN_FRAMES_MAX = 90
     MAX_EPISODE_STEPS = 1000
 
-    # --- Parámetros de Movimiento ---
-    # Ángulo en Radianes por paso (Aprox 4.5 grados)
-    ROTATION_SPEED = 0.08
-    # Unidades de mundo por paso
-    SPIDER_SPEED = 0.6
+    # --- Configuración de Renderizado y Lógica ---
+    RENDER_FPS = 30
+    # NUEVO: Definimos la tasa de lógica para conversiones de tiempo
+    LOGIC_FPS = 30.0
+
+    # --- Parámetros de Movimiento (Ahora en unidades por SEGUNDO) ---
+
+    # Ángulo en Radianes por segundo (Anteriormente 0.08 rad/paso)
+    ROTATION_SPEED = 0.08 * LOGIC_FPS  # 2.4 rad/s
+
+    # Unidades de mundo por segundo (Anteriormente 0.6 unidades/paso)
+    SPIDER_SPEED = 0.6 * LOGIC_FPS  # 18.0 unidades/s
     ZIGZAG_FREQUENCY = 0.05
 
-    # --- NUEVO: Velocidad del proyectil (Visual, en unidades de mundo/paso) ---
-    # Requisito 6.2. Calculado para cruzar la altura (100) en aprox 0.5s (15 frames). 100/15 ≈ 6.7
-    VISUAL_PROJECTILE_SPEED = 7.0
+    # --- Velocidad del proyectil (Visual, en unidades de mundo/SEGUNDO) ---
+    # Anteriormente 7.0 unidades/paso.
+    VISUAL_PROJECTILE_SPEED = 7.0 * LOGIC_FPS  # 210.0 unidades/s
 
     # --- Dimensiones del Mundo (Lógica Cónica) ---
     WORLD_HEIGHT = 100.0
@@ -52,7 +61,6 @@ class AntGuardConstants:
     GAME_HEIGHT = 700
     UI_HEIGHT = 100
     WINDOW_HEIGHT = GAME_HEIGHT + UI_HEIGHT
-    RENDER_FPS = 30
 
     # Colores
     COLOR_BG_OUTSIDE = (30, 20, 10)

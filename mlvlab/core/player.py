@@ -50,6 +50,8 @@ def play_interactive(env_id: str, key_map: dict, seed: Optional[int] = None):
     pending_action = None
     # Estado para controlar la animación final ---
     waiting_for_end_scene = False
+    # Estado para teclas mantenidas (rotación continua)
+    pressed_keys = set()
 
     # Sonidos cacheados
     cached_sounds: dict[str, Optional[pyglet.media.Source]] = {}
@@ -69,19 +71,28 @@ def play_interactive(env_id: str, key_map: dict, seed: Optional[int] = None):
     print(i18n.t("cli.messages.game_started"))
 
     def on_key_press(symbol: int, modifiers: int):
-        nonlocal pending_action, running
+        nonlocal pending_action, running, pressed_keys
         if symbol == arcade.key.ESCAPE:
             running = False
             return
         # Ignorar input si estamos en la animación final
-        if not waiting_for_end_scene and symbol in key_map:
-            pending_action = key_map[symbol]
+        if not waiting_for_end_scene:
+            if symbol in key_map:
+                pressed_keys.add(symbol)
+                # Para AntGuard, solo disparar inmediatamente, no rotar
+                if env_id.startswith("mlv/AntGuard") and key_map[symbol] == 3:
+                    pending_action = key_map[symbol]
+
+    def on_key_release(symbol: int, modifiers: int):
+        nonlocal pressed_keys
+        pressed_keys.discard(symbol)
 
     def on_close():
         nonlocal running
         running = False
 
-    window.push_handlers(on_key_press=on_key_press, on_close=on_close)
+    window.push_handlers(on_key_press=on_key_press,
+                         on_key_release=on_key_release, on_close=on_close)
 
     target_dt = 1.0 / 60.0
     terminated = False
@@ -120,24 +131,42 @@ def play_interactive(env_id: str, key_map: dict, seed: Optional[int] = None):
             # 5. Si no pasa nada de lo anterior, ejecutamos la acción del jugador.
             obs, reward, terminated, truncated, info = env.step(pending_action)
             pending_action = None
+        else:
+            # 6. NUEVO: Para AntGuard, manejar teclas mantenidas y acción automática
+            action_to_execute = 0  # Acción por defecto: esperar
 
-            # Gestión de sonido (sin cambios)
-            if 'play_sound' in info:
-                sound_data = info['play_sound']
-                filename = sound_data.get('filename')
-                if filename:
-                    if filename not in cached_sounds:
-                        asset_path = find_asset_path(env, filename)
-                        source = pyglet.media.load(
-                            str(asset_path), streaming=False) if asset_path and asset_path.exists() else None
-                        cached_sounds[filename] = source
-                    source = cached_sounds.get(filename)
-                    if source is not None:
-                        player = pyglet.media.Player()
-                        player.volume = float(
-                            sound_data.get('volume', 100)) / 100.0
-                        player.queue(source)
-                        player.play()
+            if env_id.startswith("mlv/AntGuard"):
+                # Verificar si hay teclas de rotación mantenidas
+                for symbol in pressed_keys:
+                    if symbol in key_map:
+                        action = key_map[symbol]
+                        if action in [1, 2]:  # Rotación izquierda/derecha
+                            action_to_execute = action
+                            break  # Solo una rotación a la vez
+
+                obs, reward, terminated, truncated, info = env.step(
+                    action_to_execute)
+            else:
+                # Para otros entornos, comportamiento original
+                obs, reward, terminated, truncated, info = env.step(0)
+
+        # Gestión de sonido (funciona para todas las acciones: manuales y automáticas)
+        if 'play_sound' in info:
+            sound_data = info['play_sound']
+            filename = sound_data.get('filename')
+            if filename:
+                if filename not in cached_sounds:
+                    asset_path = find_asset_path(env, filename)
+                    source = pyglet.media.load(
+                        str(asset_path), streaming=False) if asset_path and asset_path.exists() else None
+                    cached_sounds[filename] = source
+                source = cached_sounds.get(filename)
+                if source is not None:
+                    player = pyglet.media.Player()
+                    player.volume = float(
+                        sound_data.get('volume', 100)) / 100.0
+                    player.queue(source)
+                    player.play()
 
         # Renderizamos en cada fotograma para que la animación se vea fluida
         env.render()
